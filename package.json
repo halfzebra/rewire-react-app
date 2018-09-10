@@ -1,0 +1,26 @@
+{
+  "name": "rewire-react-app",
+  "version": "1.0.0",
+  "author": "Eduard Kyvenko <eduard.kyvenko@gmail.com",
+  "bin": {
+    "rewire-react-app": "index.js"
+  },
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "find-root": "^1.1.0",
+    "prompt": "^1.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^1.14.2"
+  },
+  "keywords": [
+    "cli",
+    "create-react-app",
+    "eject"
+  ],
+  "license": "MIT",
+  "repository": "git@github.com:halfzebra/rewire-react-app.git",
+  "scripts": {
+    "format": "prettier --write **/*.js"
+  }
+}
