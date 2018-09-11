@@ -3,6 +3,7 @@ const path = require('path');
 const chalk = require('chalk');
 const findScriptsUsingBin = require('./lib/findScriptsUsingBin');
 const replaceBinInScript = require('./lib/replaceBinInScript');
+const spawn = require('cross-spawn');
 
 const root = process.cwd();
 
@@ -81,11 +82,18 @@ scriptsUsingReactScripts.forEach(scriptName => {
   newPackageJson.scripts[scriptName] = rewiredScripts[scriptName];
 });
 
+// Run all the rewiring logic.
 fs.copyFileSync(configOverridesPath, path.join(root, 'config-overrides.js'));
 fs.writeFileSync(packageJsonPath, JSON.stringify(newPackageJson, null, 2));
+runCommand('npm', ['uninstall', 'react-scripts']);
+runCommand('npm', ['install', 'react-app-rewired', '--save']);
 
 console.log(chalk.bold.green('Rewired Succesfully'));
 console.log('\n');
 console.log('  Read more on rewiring here:');
 console.log('  https://github.com/timarney/react-app-rewired');
 console.log('\n');
+
+function runCommand(cmd, args) {
+  return spawn.sync(cmd, args, { stdio: 'inherit' });
+}
