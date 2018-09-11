@@ -1,6 +1,6 @@
 {
   "name": "rewire-react-app",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Eduard Kyvenko <eduard.kyvenko@gmail.com",
   "bin": {
     "rewire-react-app": "index.js"
