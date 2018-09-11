@@ -7,6 +7,5 @@
 ```bash
 npm install create-react-app rewire-react-app -g
 create-react-app my-app
-cd my-app
-rewire-react-app
+rewire-react-app my-app
 ```
