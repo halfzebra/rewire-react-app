@@ -1,4 +1,4 @@
-# rewire-react-app
+# 🤖 rewire-react-app
 
 [![npm version](https://badge.fury.io/js/rewire-react-app.svg)](https://badge.fury.io/js/rewire-react-app) [![Build Status](https://travis-ci.org/halfzebra/rewire-react-app.svg?branch=master)](https://travis-ci.org/halfzebra/rewire-react-app)
 
