@@ -1,12 +1,10 @@
-const findRoot = require('find-root');
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const prompt = require('prompt');
+const findScriptsUsingBin = require('./lib/findScriptsUsingBin')
 
-const cwd = process.cwd();
-
-const root = findRoot(cwd);
+const root = process.cwd();
 
 const packageJsonPath = path.join(root, 'package.json');
 const configOverridesPath = path.join(__dirname, 'config-overrides.js');
@@ -29,28 +27,28 @@ if (fs.existsSync(path.join(root, 'package.json'))) {
   } catch (error) {
     clearConsole();
     console.log(chalk.red('Rewiring Failed'));
-    console.log('Failed to decode package.json in ' + cwd);
+    console.log('Failed to decode package.json in ' + root);
     process.exit(1);
   }
 
-  if (!packageJson.devDependencies['react-scripts']) {
+  console.log(packageJson);
+
+  if (!packageJson.dependencies['react-scripts']) {
     clearConsole();
     console.log(chalk.red('Rewiring Failed'));
     console.log(
-      '`react-scripts` is not found  in your "devDependencies" of package.json in ' +
-        cwd
+      '`react-scripts` is not found in your "devDependencies" of package.json in ' +
+      root
     );
     process.exit(1);
   }
 
-  const scriptsUsingReactScripts = Object.keys(packageJson.scripts).filter(
-    name => name.match(/react-scripts\s/)
-  );
+  const scriptsUsingReactScripts = findScriptsUsingBin(packageJson.scripts, 'react-scripts');
 
   if (scriptsUsingReactScripts.length === 0) {
     clearConsole();
     console.log(chalk.red('Rewiring Failed'));
-    console.log('react-scripts is never used in package.json "scripts"' + cwd);
+    console.log('`react-scripts` is never used in package.json "scripts" ' + root);
     process.exit(1);
   }
 
