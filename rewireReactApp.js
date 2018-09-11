@@ -85,7 +85,6 @@ scriptsUsingReactScripts.forEach(scriptName => {
 // Run all the rewiring logic.
 fs.copyFileSync(configOverridesPath, path.join(root, 'config-overrides.js'));
 fs.writeFileSync(packageJsonPath, JSON.stringify(newPackageJson, null, 2));
-runCommand('npm', ['uninstall', 'react-scripts']);
 runCommand('npm', ['install', 'react-app-rewired', '--save']);
 
 console.log(chalk.bold.green('Rewired Succesfully'));
