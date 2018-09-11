@@ -1,0 +1,7 @@
+/fixture/
+jest.config.js
+*.spec.js
+.editorconfig
+.eslintignore
+.eslintrc.js
+.prettierrc.js
