@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const findScriptsUsingBin = require('./lib/findScriptsUsingBin');
+const replaceBinInScript = require('./lib/replaceBinInScript');
 
 const root = process.cwd();
 
@@ -60,12 +61,16 @@ if (scriptsUsingReactScripts.length === 0) {
   process.exit(1);
 }
 
-const rewiredScripts = scriptsUsingReactScripts.map(scriptName =>
-  replaceBinInScript(
-    packageJson.scripts[scriptName],
-    'react-scripts',
-    'react-app-rewired'
-  )
+const rewiredScripts = scriptsUsingReactScripts.reduce(
+  (acc, scriptName) => ({
+    ...acc,
+    [scriptName]: replaceBinInScript(
+      packageJson.scripts[scriptName],
+      'react-scripts',
+      'react-app-rewired'
+    )
+  }),
+  {}
 );
 
 const newPackageJson = {
@@ -75,9 +80,6 @@ const newPackageJson = {
 scriptsUsingReactScripts.forEach(scriptName => {
   newPackageJson.scripts[scriptName] = rewiredScripts[scriptName];
 });
-
-console.log(newPackageJson);
-process.exit(1);
 
 fs.copyFileSync(configOverridesPath, path.join(root, 'config-overrides.js'));
 fs.writeFileSync(packageJsonPath, JSON.stringify(newPackageJson, null, 2));
