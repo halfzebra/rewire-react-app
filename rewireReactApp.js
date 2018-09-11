@@ -68,7 +68,7 @@ if (!fs.existsSync(path.join(appRoot, 'package.json'))) {
   process.exit(1);
 }
 
-clearConsole();
+console.log();
 console.log('Rewiring ' + appRoot);
 
 const appPackageJsonRaw = fs.readFileSync(appPackageJsonPath);
@@ -160,8 +160,9 @@ spawn.sync('npm', args, {
   cwd: appRoot
 });
 
-clearConsole();
 console.log(chalk.bold.green('Rewired Succesfully'));
+console.log();
+console.log('  Start with checking config-overrides.js in ' + projectName);
 console.log();
 console.log('  Read more on rewiring here:');
 console.log('  https://github.com/timarney/react-app-rewired');
