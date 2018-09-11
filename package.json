@@ -5,12 +5,18 @@
   "bin": {
     "rewire-react-app": "index.js"
   },
+  "engines": {
+    "node": "8"
+  },
   "dependencies": {
     "chalk": "^2.4.1",
     "cross-spawn": "^6.0.5",
     "prompt": "^1.0.0"
   },
   "devDependencies": {
+    "eslint": "^5.5.0",
+    "eslint-config-prettier": "^3.0.1",
+    "eslint-plugin-prettier": "^2.6.2",
     "jest": "^23.6.0",
     "prettier": "^1.14.2"
   },
@@ -23,6 +29,7 @@
   "repository": "git@github.com:halfzebra/rewire-react-app.git",
   "scripts": {
     "test": "jest",
-    "format": "prettier --write **/*.js"
+    "lint": "eslint lib",
+    "format": "prettier --write /lib/*.js /rewireReactApp.js"
   }
 }

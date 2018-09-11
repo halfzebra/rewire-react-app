@@ -3,6 +3,7 @@ const path = require('path');
 const chalk = require('chalk');
 const findScriptsUsingBin = require('./lib/findScriptsUsingBin');
 const replaceBinInScript = require('./lib/replaceBinInScript');
+const replaceScripts = require('./lib/replaceScripts');
 const spawn = require('cross-spawn');
 
 const root = process.cwd();
@@ -19,7 +20,7 @@ function clearConsole() {
 if (!fs.existsSync(path.join(root, 'package.json'))) {
   clearConsole();
   console.log(chalk.red('Rewiring Failed'));
-  console.log('package.json was not foind in ' + cwd);
+  console.log('package.json was not foind in ' + root);
   process.exit(1);
 }
 
@@ -38,11 +39,14 @@ try {
   process.exit(1);
 }
 
-if (!packageJson.dependencies['react-scripts']) {
+if (
+  !packageJson.dependencies['react-scripts'] ||
+  packageJson.devDependencies['react-scripts']
+) {
   clearConsole();
   console.log(chalk.red('Rewiring Failed'));
   console.log(
-    '`react-scripts` is not found in your "devDependencies" of package.json in ' +
+    '`react-scripts` is not found in your "dependencies" of package.json in ' +
       root
   );
   process.exit(1);
@@ -74,25 +78,17 @@ const rewiredScripts = scriptsUsingReactScripts.reduce(
   {}
 );
 
-const newPackageJson = {
-  ...packageJson
-};
-
-scriptsUsingReactScripts.forEach(scriptName => {
-  newPackageJson.scripts[scriptName] = rewiredScripts[scriptName];
-});
+const newPackageJson = replaceScripts(packageJson, rewiredScripts);
 
 // Run all the rewiring logic.
 fs.copyFileSync(configOverridesPath, path.join(root, 'config-overrides.js'));
 fs.writeFileSync(packageJsonPath, JSON.stringify(newPackageJson, null, 2));
-runCommand('npm', ['install', 'react-app-rewired', '--save']);
+spawn.sync('npm', ['install', 'react-app-rewired', '--save'], {
+  stdio: 'inherit'
+});
 
 console.log(chalk.bold.green('Rewired Succesfully'));
 console.log('\n');
 console.log('  Read more on rewiring here:');
 console.log('  https://github.com/timarney/react-app-rewired');
 console.log('\n');
-
-function runCommand(cmd, args) {
-  return spawn.sync(cmd, args, { stdio: 'inherit' });
-}
