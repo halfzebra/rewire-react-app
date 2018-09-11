@@ -156,7 +156,8 @@ const args = [
 ];
 
 spawn.sync('npm', args, {
-  stdio: 'inherit'
+  stdio: 'inherit',
+  cwd: appRoot
 });
 
 clearConsole();
