@@ -11,8 +11,7 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "commander": "^2.18.0",
-    "cross-spawn": "^6.0.5",
-    "lodash.get": "^4.4.2"
+    "cross-spawn": "^6.0.5"
   },
   "devDependencies": {
     "eslint": "^5.5.0",

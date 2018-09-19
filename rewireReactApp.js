@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const commander = require('commander');
-const get = require('lodash.get');
 const findScriptsUsingBin = require('./lib/findScriptsUsingBin');
 const replaceBinInScript = require('./lib/replaceBinInScript');
 const clearConsole = require('./lib/clearConsole');
@@ -88,13 +87,35 @@ try {
   process.exit(1);
 }
 
-const isInDependencies = !!get(appPackageJson, 'dependencies.react-scripts');
-const isInDevDependencies = !!get(
-  appPackageJson,
-  'devDependencies.react-scripts'
-);
+function isInDependencies(packageJson, packageName) {
+  return (
+    packageJson.dependencies &&
+    typeof packageJson.dependencies[packageName] !== 'undefined'
+  );
+}
 
-if (isInDependencies === false && isInDevDependencies === false) {
+function isInDevDependencies(packageJson, packageName) {
+  return (
+    packageJson.devDependencies &&
+    typeof packageJson.devDependencies[packageName] !== 'undefined'
+  );
+}
+
+const appConfigOverridesPath = path.join(appRoot, 'config-overrides.js');
+
+if (
+  isInDependencies('react-app-rewired') &&
+  isInDevDependencies('react-app-rewired') &&
+  fs.existsSync(appConfigOverridesPath)
+) {
+  console.log(chalk.yellow('Already Rewired'));
+  console.log();
+  console.log('  It looks like your app is already rewired.');
+  console.log();
+  process.exit(0);
+}
+
+if (isInDependencies('react-scripts') && isInDevDependencies('react-scripts')) {
   clearConsole();
   console.log(chalk.red('Rewiring Failed'));
   console.log();
@@ -143,7 +164,7 @@ const rewiredScripts = scriptsUsingReactScripts.reduce(
 const newAppPackageJson = replaceScripts(appPackageJson, rewiredScripts);
 
 // Run all the rewiring logic.
-fs.copyFileSync(configOverridesPath, path.join(appRoot, 'config-overrides.js'));
+fs.copyFileSync(configOverridesPath, appConfigOverridesPath);
 fs.writeFileSync(
   appPackageJsonPath,
   JSON.stringify(newAppPackageJson, null, 2)
@@ -152,7 +173,7 @@ fs.writeFileSync(
 const args = [
   'install',
   'react-app-rewired',
-  isInDependencies ? '--save' : '--save-dev'
+  isInDependencies('react-scripts') ? '--save' : '--save-dev'
 ];
 
 spawn.sync('npm', args, {
